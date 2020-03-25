@@ -7,16 +7,17 @@
  *  Example: "This is [header1] that corresponds to a value of [header2]."
  */
 function doMerge() {
-  var selectedTemplateId = "1foobarfoobarfoobarfoobarfoobarfoobar";//Copy and paste the ID of the template document here (you can find this in the document's URL)
-  
+  var selectedTemplateId = "1WBxzozWMzbhFuKyzwxkHAw3tHo_D_DH2j3tobsfX3gA";//Copy and paste the ID of the template document here (you can find this in the document's URL)
+  var DestFolderID = "1r3pxKGydRSNds2TpY_bevCpDWWHQAdgv";
+  var DestFolder = DriveApp.getFolderById(DestFolderID);
   var templateFile = DriveApp.getFileById(selectedTemplateId);
-  var mergedFile = templateFile.makeCopy();//make a copy of the template file to use for the merged File. Note: It is necessary to make a copy upfront, and do the rest of the content manipulation inside this single copied file, otherwise, if the destination file and the template file are separate, a Google bug will prevent copying of images from the template to the destination. See the description of the bug here: https://code.google.com/p/google-apps-script-issues/issues/detail?id=1612#c14
-  mergedFile.setName("filled_"+templateFile.getName());//give a custom name to the new file (otherwise it is called "copy of ...")
-  var mergedDoc = DocumentApp.openById(mergedFile.getId());
-  var bodyElement = mergedDoc.getBody();//the body of the merged document, which is at this point the same as the template doc.
-  var bodyCopy = bodyElement.copy();//make a copy of the body
+ // var mergedFile = templateFile.makeCopy();//make a copy of the template file to use for the merged File. Note: It is necessary to make a copy upfront, and do the rest of the content manipulation inside this single copied file, otherwise, if the destination file and the template file are separate, a Google bug will prevent copying of images from the template to the destination. See the description of the bug here: https://code.google.com/p/google-apps-script-issues/issues/detail?id=1612#c14
+ //mergedFile.setName("filled_"+templateFile.getName());//give a custom name to the new file (otherwise it is called "copy of ...")
+//  var mergedDoc = DocumentApp.openById(mergedFile.getId());
+//  var bodyElement = mergedDoc.getBody();//the body of the merged document, which is at this point the same as the template doc.
+//  var bodyCopy = bodyElement.copy();//make a copy of the body
   
-  bodyElement.clear();//clear the body of the mergedDoc so that we can write the new data in it.
+//  bodyElement.clear();//clear the body of the mergedDoc so that we can write the new data in it.
   
   var sheet = SpreadsheetApp.getActiveSheet();//current sheet
 
@@ -27,8 +28,14 @@ function doMerge() {
 
   for (var i = 1; i < numRows; i++) {//data values start from the second row of the sheet 
     var row = values[i];
-    var body = bodyCopy.copy();
     
+    var mergedFile = templateFile.makeCopy(values[i][9], DestFolder);//make a copy of the template file to use for the merged File. Note: It is necessary to make a copy upfront, and do the rest of the content manipulation inside this single copied file, otherwise, if the destination file and the template file are separate, a Google bug will prevent copying of images from the template to the destination. See the description of the bug here: https://code.google.com/p/google-apps-script-issues/issues/detail?id=1612#c14
+    var mergedDoc = DocumentApp.openById(mergedFile.getId());
+    var bodyElement = mergedDoc.getBody();//the body of the merged document, which is at this point the same as the template doc.
+    var bodyCopy = bodyElement.copy();//make a copy of the body
+    var body = bodyCopy.copy();
+      bodyElement.clear();//clear the body of the mergedDoc so that we can write the new data in it.
+      
     for (var f = 0; f < fieldNames.length; f++) {
       body.replaceText("\\[" + fieldNames[f] + "\\]", row[f]);//replace [fieldName] with the respective data value
     }
@@ -53,7 +60,7 @@ function doMerge() {
       }
    }
     
-   mergedDoc.appendPageBreak();//Appending page break. Each row will be merged into a new page.
+   //mergedDoc.appendPageBreak();//Appending page break. Each row will be merged into a new page.
 
   }
 }
@@ -68,11 +75,11 @@ function doMerge() {
  * For more information on using the Spreadsheet API, see
  * https://developers.google.com/apps-script/service_spreadsheet
  */
-function onOpen() {
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var entries = [{
-    name : "Fill template",
-    functionName : "doMerge"
-  }];
-  spreadsheet.addMenu("Merge", entries);
-};
+//function onOpen() {
+//  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+//  var entries = [{
+//    name : "Fill template",
+//    functionName : "doMerge"
+//  }];
+//  spreadsheet.addMenu("Merge", entries);
+//};
