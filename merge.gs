@@ -7,9 +7,7 @@
  *  Example: "This is [header1] that corresponds to a value of [header2]."
  */
 function doMerge() {
-  var selectedTemplateId = "1WBxzozWMzbhFuKyzwxkHAw3tHo_D_DH2j3tobsfX3gA";//Copy and paste the ID of the template document here (you can find this in the document's URL)
-  var DestFolderID = "1r3pxKGydRSNds2TpY_bevCpDWWHQAdgv";
-  var DestFolder = DriveApp.getFolderById(DestFolderID);
+  var selectedTemplateId = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";//Copy and paste the ID of the template document here (you can find this in the document's URL)
   var templateFile = DriveApp.getFileById(selectedTemplateId);
  // var mergedFile = templateFile.makeCopy();//make a copy of the template file to use for the merged File. Note: It is necessary to make a copy upfront, and do the rest of the content manipulation inside this single copied file, otherwise, if the destination file and the template file are separate, a Google bug will prevent copying of images from the template to the destination. See the description of the bug here: https://code.google.com/p/google-apps-script-issues/issues/detail?id=1612#c14
  //mergedFile.setName("filled_"+templateFile.getName());//give a custom name to the new file (otherwise it is called "copy of ...")
@@ -28,7 +26,20 @@ function doMerge() {
 
   for (var i = 1; i < numRows; i++) {//data values start from the second row of the sheet 
     var row = values[i];
-    
+    Logger.log(row[10]); //10 is the row the 'who', The item of interest is located
+  if (row[10]=="Who1") {
+           var DestFolderID = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+      } else if (row[10]=="Who2") {
+           var DestFolderID = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+                 } else if (row[10]=="Who3") {
+           var DestFolderID = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+                 } else if (row[10]=="Who4") {
+           var DestFolderID = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+      } else {
+           var DestFolderID = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+      }
+
+    var DestFolder = DriveApp.getFolderById(DestFolderID);
     var mergedFile = templateFile.makeCopy(values[i][9], DestFolder);//make a copy of the template file to use for the merged File. Note: It is necessary to make a copy upfront, and do the rest of the content manipulation inside this single copied file, otherwise, if the destination file and the template file are separate, a Google bug will prevent copying of images from the template to the destination. See the description of the bug here: https://code.google.com/p/google-apps-script-issues/issues/detail?id=1612#c14
     var mergedDoc = DocumentApp.openById(mergedFile.getId());
     var bodyElement = mergedDoc.getBody();//the body of the merged document, which is at this point the same as the template doc.
@@ -64,7 +75,6 @@ function doMerge() {
 
   }
 }
-
 
 
 /**
